@@ -42,7 +42,7 @@ import StudentsLogin.StudentsVO;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-    private final static String ACTION = "";
+    private final static String ACTION = "getAll";
     private AsyncTask StudentsLoginTask;
     private ProgressDialog progressDialog;
     private RadioGroup rgMembers;
