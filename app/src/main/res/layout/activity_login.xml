@@ -22,13 +22,13 @@
         android:id="@+id/rgMembers">
 
         <RadioButton
+            android:id="@+id/rbStudents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:id="@+id/rbStudents"
             android:text="健身者"
-            android:textStyle="bold"
-            android:textSize="16dp"/>
+            android:textSize="16dp"
+            android:textStyle="bold"/>
 
         <RadioButton
             android:layout_width="wrap_content"

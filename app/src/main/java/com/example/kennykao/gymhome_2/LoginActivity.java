@@ -43,7 +43,7 @@ import StudentsLogin.StudentsVO;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private final static String ACTION = "getAll";
-    private AsyncTask StudentsLoginTask;
+    private AsyncTask studentsLoginTask;
     private ProgressDialog progressDialog;
     private RadioGroup rgMembers;
     private RadioButton rbStudents;
@@ -53,13 +53,15 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
 
 
-    class StudentsLoginTask extends AsyncTask<String, Object, List<StudentsVO>> {
+    private class StudentsLoginTask extends AsyncTask<String, Object, List<StudentsVO>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(LoginActivity.this);
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.show();
+            Log.d(TAG, "ZZZZZZZZZZZZZZZZZZZZZZZZZZz: ");
+
         }
 
         @Override
@@ -109,41 +111,66 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "jsonIn: " + jsonIn);
             return jsonIn.toString();
         }
+    }
 
 
-//        @Override
-//        protected void onCreate(Bundle savedInstanceState) {
-//            super.onCreate(savedInstanceState);
-//            setContentView(R.layout.activity_login);
-//            rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
-//            rbStudents = (RadioButton) findViewById(R.id.rbStudents);
-//            btLogin = (Button) findViewById(R.id.btLogin);
-//            etEmail = (EditText) findViewById(R.id.etEmail);
-//            etPassword = (EditText) findViewById(R.id.etPassword);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        Log.d(TAG, "ZZZZZZZZZZZZZZZZZZZZZZZZZZz: ");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
+        rbStudents = (RadioButton) findViewById(R.id.rbStudents);
+        btLogin = (Button) findViewById(R.id.btLogin);
+        etEmail = (EditText) findViewById(R.id.etEmail);
+        etPassword = (EditText) findViewById(R.id.etPassword);
+
+        if (networkConnected()) {
+            studentsLoginTask = new StudentsLoginTask().execute(Common.URL);
+        } else {
+            Log.d(TAG, "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+        }
+
+
+
+//
+//        Intent intent = new Intent();
+//        intent.setClass(LoginActivity.this, HomepageActivity.class);
+//        startActivity(intent);
+//        LoginActivity.this.finish();
+
+    }
 //
 //            btLogin.setOnClickListener(new Button.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
+//
 //                    String email = String.valueOf(etEmail.getText());
 //                    Log.d(TAG, email);
 //                    String passwd = String.valueOf(etPassword.getText());
 //                    Log.d(TAG, passwd);
-//
-//                    if (Common.networkConnected()) {
-//                        retrieveLoginTask = new RetrieveLoginTask().execute(Common.URL, email, passwd);
+
+//                    if (Common.networkConnected(getActivity())) {
+//                        studentsLoginTask = new StudentsLoginTask().execute(Common.URL);
 //                    } else {
 //                        showToast(this, R.string.msg_NoNetwork);
 //                    }
-//
-//
-//                    Intent intent = new Intent();
-//                    intent.setClass(LoginActivity.this, HomepageActivity.class);
-//                    startActivity(intent);
-//                    LoginActivity.this.finish();
-//                }
-//            });
-//        }
-//    }
+
+
+    private boolean networkConnected() {
+        ConnectivityManager conManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = conManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
 }
+
+
+
+
+
+
+
 
 
