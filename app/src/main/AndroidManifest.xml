@@ -30,11 +30,6 @@
             android:name=".SignupActivity"
             android:label="Signup"
             android:launchMode="singleTask"/>
-        <activity
-            android:name=".FakeHomepageActivity"
-            android:label="@string/title_activity_fake_homepage"
-            android:theme="@style/AppTheme">
-        </activity>
     </application>
 
 </manifest>

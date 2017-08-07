@@ -3,6 +3,7 @@ package com.example.kennykao.gymhome_2;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -124,121 +125,74 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "yyyyyyyyyyyyyyyyyyyyyyyyyyy: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-    };
+        btLogin.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String email = etEmail.getText().toString().trim();
+                String password = etPassword.getText().toString().trim();
+                if (email.length() <= 0 || password.length() <= 0) {
+                    showMessage(R.string.msg_InvalidEmailOrPassword);
+                    return;
+                }
+
+                if (isLoginValid(email, password)) {
+                    SharedPreferences pref = getSharedPreferences(Common.PREF_FILE,
+                            MODE_PRIVATE);
+                    pref.edit()
+                            .putBoolean("login", true)
+                            .putString("email", email)
+                            .putString("password", password)
+                            .apply();
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showMessage(R.string.msg_InvalidEmailOrPassword);
+                }
+            }
+
+
+        });
+    }
+
+    private void showMessage(int msg_invalidEmailOrPassword) {
+        return;
+    }
+
+    private boolean isLoginValid(String email, String password) {
+        return Boolean.parseBoolean(null);
+    }
 
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        if (Common.networkConnected(getActivity())) {
-            String url = Common.URL + "StudentsServlet";
-            List<StudentsVO> studentsList = null;
-
-            ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-            try {
-                studentsList = (List<StudentsVO>) new LoginActivity().execute(url).get();
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
-            if (studentsList == null || studentsList.isEmpty()) {
-                Common.showToast(getActivity(), R.string.msg_NotFound);
+        SharedPreferences pref = getSharedPreferences(Common.PREF_FILE, MODE_PRIVATE);
+        boolean login = pref.getBoolean("login", false);
+        if (login) {
+            String name = pref.getString("user", "");
+            String password = pref.getString("password", "");
+            if (isUserValid(name, password)) {
+                setResult(RESULT_OK);
+                finish();
             } else {
-                Log.d(TAG, "zzzzzzzzzzzzzzzzzzzzzzzzzzz: ");
+                showMessage(R.string.msg_InvalidEmailOrPassword);
             }
-            progressDialog.cancel();
-
-        } else {
-            Common.showToast(getActivity(), R.string.msg_NoNetwork);
         }
     }
 
-    private AtomicReference execute(Object url) {
-        return null;
-    }
 
-    private LoginActivity getActivity() {
-        return null;
+
+    private boolean isLoginValid(String email, String password) {
+        // 應該連線至server端檢查帳號密碼是否正確
+        return email.equals("a");
     }
 
 
 }
 
 
-//        btLogin.setOnClickListener(new Button.OnClickListener() {
-//
-//           @Override
-//           public void onClick(View v) {
-//               setContentView(R.layout.fakehomepage);
-//           }
-//               String email = etEmail.getText().toString();
-//               final String password = etPassword.getText().toString();
-//
-//               if (TextUtils.isEmpty(email)) {
-//                   Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
-//                   return;
-//               }
-//
-//               if (TextUtils.isEmpty(password)) {
-//                   Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
-//                   return;
-//               }
-//
-//
-//
-//    }
-//});
 
-
-
-
-////               //authenticate user
-////               auth.signInWithEmailAndPassword(email, password)
-////           .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-////               @Override
-////               public void onComplete(@NonNull Task<AuthResult> task) {
-////                   // If sign in fails, display a message to the user. If sign in succeeds
-////                   // the auth state listener will be notified and logic to handle the
-////                   // signed in user can be handled in the listener.
-////                   progressBar.setVisibility(View.GONE);
-////                   if (!task.isSuccessful()) {
-////                       // there was an error
-////                       if (password.length() < 6) {
-////                           inputPassword.setError(getString(R.string.minimum_password));
-////                       } else {
-////                           Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-////                       }
-//                   } else {
-//                       Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
-//                       startActivity(intent);
-//                       finish();
-//                   }
-//               }
-//           });
-//}
-//       }
-
-
-
-
-
-
-
-
-
-
-
-//                    String email = String.valueOf(etEmail.getText());
-//                    Log.d(TAG, email);
-//                    String passwd = String.valueOf(etPassword.getText());
-//                    Log.d(TAG, passwd);
-
-//                    if (Common.networkConnected(getActivity())) {
-//                        studentsLoginTask = new StudentsLoginTask().execute(Common.URL);
-//                    } else {
-//                        showToast(this, R.string.msg_NoNetwork);
-//                    }
 
 
 

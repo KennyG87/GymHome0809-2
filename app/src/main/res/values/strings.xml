@@ -2,6 +2,5 @@
     <string name="activity_signup" align="center">Sign Up</string>
     <string name="activity_login" align="center">Login</string>
     <string name="title_activity_fake_homepage">FakeHomepageActivity</string>
-    <string name="msg_NotFound">msg_NotFound</string>
-    <string name="msg_NoNetwork">msg_NoNetwork</string>
+    <string name="msg_InvalidEmailOrPassword">msg_InvalidEmailOrPassword</string>
 </resources>
