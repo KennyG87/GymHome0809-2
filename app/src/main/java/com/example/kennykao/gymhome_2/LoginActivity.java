@@ -7,22 +7,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -37,8 +32,11 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import StudentsLogin.StudentsVO;
+
+import static android.app.PendingIntent.getActivity;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -51,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btLogin;
     private EditText etEmail;
     private EditText etPassword;
+
 
 
     private class StudentsLoginTask extends AsyncTask<String, Object, List<StudentsVO>> {
@@ -116,36 +115,119 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        Log.d(TAG, "ZZZZZZZZZZZZZZZZZZZZZZZZZZz: ");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        rgMembers = (RadioGroup) findViewById(R.id.rgMembers);
         rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
         rbStudents = (RadioButton) findViewById(R.id.rbStudents);
         btLogin = (Button) findViewById(R.id.btLogin);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
+        Log.d(TAG, "yyyyyyyyyyyyyyyyyyyyyyyyyyy: ");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+    };
 
-        if (networkConnected()) {
-            studentsLoginTask = new StudentsLoginTask().execute(Common.URL);
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Common.networkConnected(getActivity())) {
+            String url = Common.URL + "StudentsServlet";
+            List<StudentsVO> studentsList = null;
+
+            ProgressDialog progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            try {
+                studentsList = new LoginActivity().execute(url).get();
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+            if (studentsList == null || studentsList.isEmpty()) {
+                Common.showToast(getActivity(), R.string.msg_NoNewsFound);
+            } else {
+                rvNews.setAdapter(new NewsRecyclerViewAdapter(getActivity(), newsList));
+            }
+            progressDialog.cancel();
+
         } else {
-            Log.d(TAG, "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+            Common.showToast(getActivity(), R.string.msg_NoNetwork);
         }
-
-
-
-//
-//        Intent intent = new Intent();
-//        intent.setClass(LoginActivity.this, HomepageActivity.class);
-//        startActivity(intent);
-//        LoginActivity.this.finish();
-
     }
+
+    private AtomicReference execute(Object url) {
+        return null;
+    }
+
+    private LoginActivity getActivity() {
+    }
+
+
+}
+
+
+//        btLogin.setOnClickListener(new Button.OnClickListener() {
 //
-//            btLogin.setOnClickListener(new Button.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
+//           @Override
+//           public void onClick(View v) {
+//               setContentView(R.layout.fakehomepage);
+//           }
+//               String email = etEmail.getText().toString();
+//               final String password = etPassword.getText().toString();
 //
+//               if (TextUtils.isEmpty(email)) {
+//                   Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+//                   return;
+//               }
+//
+//               if (TextUtils.isEmpty(password)) {
+//                   Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+//                   return;
+//               }
+//
+//
+//
+//    }
+//});
+
+
+
+
+////               //authenticate user
+////               auth.signInWithEmailAndPassword(email, password)
+////           .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+////               @Override
+////               public void onComplete(@NonNull Task<AuthResult> task) {
+////                   // If sign in fails, display a message to the user. If sign in succeeds
+////                   // the auth state listener will be notified and logic to handle the
+////                   // signed in user can be handled in the listener.
+////                   progressBar.setVisibility(View.GONE);
+////                   if (!task.isSuccessful()) {
+////                       // there was an error
+////                       if (password.length() < 6) {
+////                           inputPassword.setError(getString(R.string.minimum_password));
+////                       } else {
+////                           Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+////                       }
+//                   } else {
+//                       Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
+//                       startActivity(intent);
+//                       finish();
+//                   }
+//               }
+//           });
+//}
+//       }
+
+
+
+
+
+
+
+
+
+
+
 //                    String email = String.valueOf(etEmail.getText());
 //                    Log.d(TAG, email);
 //                    String passwd = String.valueOf(etPassword.getText());
@@ -156,18 +238,6 @@ public class LoginActivity extends AppCompatActivity {
 //                    } else {
 //                        showToast(this, R.string.msg_NoNetwork);
 //                    }
-
-
-    private boolean networkConnected() {
-        ConnectivityManager conManager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = conManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-}
-
-
-
 
 
 
