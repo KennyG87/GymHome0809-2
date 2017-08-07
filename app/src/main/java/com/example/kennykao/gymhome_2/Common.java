@@ -28,4 +28,8 @@ public class Common {
     public static void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
+
+    public static boolean networkConnected(LoginActivity activity) {
+        return false;
+    }
 }

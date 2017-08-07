@@ -138,14 +138,14 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.setMessage("Loading...");
             progressDialog.show();
             try {
-                studentsList = new LoginActivity().execute(url).get();
+                studentsList = (List<StudentsVO>) new LoginActivity().execute(url).get();
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
             if (studentsList == null || studentsList.isEmpty()) {
-                Common.showToast(getActivity(), R.string.msg_NoNewsFound);
+                Common.showToast(getActivity(), R.string.msg_NotFound);
             } else {
-                rvNews.setAdapter(new NewsRecyclerViewAdapter(getActivity(), newsList));
+                Log.d(TAG, "zzzzzzzzzzzzzzzzzzzzzzzzzzz: ");
             }
             progressDialog.cancel();
 
@@ -159,6 +159,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private LoginActivity getActivity() {
+        return null;
     }
 
 
