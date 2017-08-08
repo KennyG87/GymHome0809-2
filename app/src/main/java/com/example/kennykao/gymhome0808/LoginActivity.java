@@ -1,23 +1,20 @@
-package com.example.kennykao.gymhome_2;
+package com.example.kennykao.gymhome0808;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
+
 
 
 import com.google.gson.Gson;
@@ -33,11 +30,12 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+
+
 
 import StudentsLogin.StudentsVO;
 
-import static android.app.PendingIntent.getActivity;
+
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -125,71 +123,86 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "yyyyyyyyyyyyyyyyyyyyyyyyyyy: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        btLogin.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                String email = etEmail.getText().toString().trim();
-                String password = etPassword.getText().toString().trim();
-                if (email.length() <= 0 || password.length() <= 0) {
-                    showMessage(R.string.msg_InvalidEmailOrPassword);
-                    return;
-                }
-
-                if (isLoginValid(email, password)) {
-                    SharedPreferences pref = getSharedPreferences(Common.PREF_FILE,
-                            MODE_PRIVATE);
-                    pref.edit()
-                            .putBoolean("login", true)
-                            .putString("email", email)
-                            .putString("password", password)
-                            .apply();
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    showMessage(R.string.msg_InvalidEmailOrPassword);
-                }
-            }
+//最基本的click回應
+//        btLogin.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                Intent intent = new Intent();
+//                intent.setClass(LoginActivity.this, HomepageActivity.class);
+//                startActivity(intent);
+//                LoginActivity.this.finish();
+//            }
+//        });
 
 
-        });
-    }
+//        btLogin.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                String email = etEmail.getText().toString().trim();
+//                String password = etPassword.getText().toString().trim();
+//                if (email.length() <= 0 || password.length() <= 0) {
+//                    showMessage(R.string.msg_InvalidEmailOrPassword);
+//                    return;
+//                }
+//
+//                if (isLoginValid(email, password)) {
+//                    SharedPreferences pref = getSharedPreferences(Common.PREF_FILE,
+//                            MODE_PRIVATE);
+//                    pref.edit()
+//                            .putBoolean("login", true)
+//                            .putString("email", email)
+//                            .putString("password", password)
+//                            .apply();
+//                    setResult(RESULT_OK);
+//                    finish();
+//                } else {
+//                    showMessage(R.string.msg_InvalidEmailOrPassword);
+//                }
+//            }
+//
+//
+//        });
+//    }
+//
+//    private void showMessage(int msg_invalidEmailOrPassword) {
+//        return;
+//    }
+//
+//
+//
+//    private boolean isLoginValid(String email, String password) {
+//        return Boolean.parseBoolean(null);
+//    }
+//
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        SharedPreferences pref = getSharedPreferences(Common.PREF_FILE, MODE_PRIVATE);
+//        boolean login = pref.getBoolean("login", false);
+//        if (login) {
+//            String email = pref.getString("email", "");
+//            String password = pref.getString("password", "");
+//            if (isLoginValid(email, password)) {
+//                setResult(RESULT_OK);
+//                finish();
+//            } else {
+//                showMessage(R.string.msg_InvalidEmailOrPassword);
+//            }
+//        }
+//    }
+//
+//
+//
+//    private boolean isLoginValid(String email, String password) {
+//        // 應該連線至server端檢查帳號密碼是否正確
+//        return email.equals("a");
+//    }
 
-    private void showMessage(int msg_invalidEmailOrPassword) {
-        return;
-    }
 
-    private boolean isLoginValid(String email, String password) {
-        return Boolean.parseBoolean(null);
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        SharedPreferences pref = getSharedPreferences(Common.PREF_FILE, MODE_PRIVATE);
-        boolean login = pref.getBoolean("login", false);
-        if (login) {
-            String name = pref.getString("user", "");
-            String password = pref.getString("password", "");
-            if (isUserValid(name, password)) {
-                setResult(RESULT_OK);
-                finish();
-            } else {
-                showMessage(R.string.msg_InvalidEmailOrPassword);
-            }
-        }
-    }
-
-
-
-    private boolean isLoginValid(String email, String password) {
-        // 應該連線至server端檢查帳號密碼是否正確
-        return email.equals("a");
-    }
-
-
-}
+}}
 
 
 
