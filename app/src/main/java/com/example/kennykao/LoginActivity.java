@@ -1,7 +1,6 @@
-package com.example.kennykao.gymhome0808;
+package com.example.kennykao;
 
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -16,30 +15,24 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
-import com.example.kennykao.gymhome_2.Common;
-import com.example.kennykao.gymhome_2.MemberCoach;
 import com.example.kennykao.gymhome_2.R;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
 import CoachesLogin.CoachesVO;
 import StudentsLogin.StudentsVO;
 
-import static com.example.kennykao.gymhome_2.Common.networkConnected;
-import static com.example.kennykao.gymhome_2.Common.showToast;
+import static com.example.kennykao.Common.showToast;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -99,10 +92,10 @@ public class LoginActivity extends AppCompatActivity {
                 coas = memberCoach.getCoachesVO();
 
                 if(memberCoach == null ) {
-                    showToast(getBaseContext(), "WRONG");
+                    Common.showToast(getBaseContext(), "WRONG");
                     return;
                 }else {
-                    showToast(getBaseContext(), "Ok");
+                    Common.showToast(getBaseContext(), "Ok");
 
                 }
 
@@ -232,13 +225,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private MemberCoach isUserValid(String role, String username, String password) throws ExecutionException, InterruptedException {
         Object obj = null;
-        if (networkConnected(this)) {
+        if (Common.networkConnected(this)) {
             if (studentsLoginTask == null){
                 studentsLoginTask = new StudentsLoginTask();
             }
             memberCoach =studentsLoginTask.execute(Common.URL, role, username, password).get();
         } else {
-            showToast(this, R.string.tryagain);
+            Common.showToast(this, R.string.tryagain);
         }
         return memberCoach;
     }
