@@ -1,6 +1,7 @@
 <resources>
     <string name="activity_signup" align="center">Sign Up</string>
     <string name="activity_login" align="center">Login</string>
-    <string name="title_activity_fake_homepage">FakeHomepageActivity</string>
-    <string name="msg_InvalidEmailOrPassword">msg_InvalidEmailOrPassword</string>
+
+    <string name="tryagain">tryagain</string>
+    <string name="InvalidUserOrPassword">InvalidUserOrPassword</string>
 </resources>

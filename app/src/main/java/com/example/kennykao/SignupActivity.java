@@ -24,6 +24,14 @@ public class SignupActivity extends AppCompatActivity {
                 startActivity(intent);
                 SignupActivity.this.finish();
             }
+
+//            @Override
+//            public void onClick(View v){
+//                Intent intent = new Intent();
+//                intent.setClass(SignupActivity.this, fakeMainpageActivity.class);
+//                startActivity(intent);
+//                SignupActivity.this.finish();
+//            }
         });
     }
 

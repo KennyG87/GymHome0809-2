@@ -22,21 +22,40 @@
         android:textAlignment="center"
         android:hint="User-Name" />
 
-    <EditText
-        android:id="@+id/etEmail"
-
-        android:layout_width="match_parent"
+    <RadioGroup
+        android:layout_margin="@dimen/fab_margin"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:hint="E-mail" />
-
-    <EditText
-        android:id="@+id/etPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:hint="Password"
-        android:inputType="textPassword" />
+        android:orientation="horizontal"
+        android:id="@+id/rgMembers">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="您的身分是:"
+            android:textStyle="bold"
+            android:textSize="16dp"/>
+
+        <RadioButton
+            android:id="@+id/rbStudents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="健身者"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbCoaches"
+            android:text="教練"
+            android:textStyle="bold"
+            android:textSize="16dp"/>
+
+    </RadioGroup>>
+
+
 
     <Button
         android:id="@+id/btSignup"

@@ -15,19 +15,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomepageActivity">
+        <activity android:name="com.example.kennykao.HomepageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".LoginActivity"
-            android:label="Login"
-            android:launchMode="singleTask"/>
+
+            android:name="com.example.kennykao.LoginActivity"
+            android:label="Login"/>
+
+
+
+
+
+
         <activity
-            android:name=".SignupActivity"
+            android:name="com.example.kennykao.SignupActivity"
             android:label="Signup"
             android:launchMode="singleTask"/>
     </application>

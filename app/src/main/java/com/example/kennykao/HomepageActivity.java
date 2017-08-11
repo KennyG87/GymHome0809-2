@@ -17,7 +17,7 @@ public class HomepageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_homepage);
 
         btLinktoLogin = (Button)findViewById(R.id.btLinktoLogin);
-        btLinktoSignup = (Button)findViewById(R.id.btLintoSignup);
+        btLinktoSignup = (Button)findViewById(R.id.btLinktoSignup);
 
         btLinktoLogin.setOnClickListener(new Button.OnClickListener(){
             @Override

@@ -95,29 +95,11 @@ public class LoginActivity extends AppCompatActivity {
                     Common.showToast(getBaseContext(), "WRONG");
                     return;
                 }else {
-                    Common.showToast(getBaseContext(), "Ok");
+                    Common.showToast(getBaseContext(), "OK");
 
                 }
 
-
-
-
-
-
-//                if (isUserValid(email, password)) {
-//                    SharedPreferences pref = getSharedPreferences(Common.PREF_FILE,
-//                            MODE_PRIVATE);
-//                    pref.edit()
-//                            .putBoolean("login", true)
-//                            .putString("email", email)
-//                            .putString("password", password)
-//                            .apply();
-//                    setResult(RESULT_OK);
-//                    finish();
-//                } else {
-//                    showMessage(R.string.msg_InvalidEmailOrPassword);
-//                }
-            }
+           }
         });
 
 
@@ -129,16 +111,6 @@ public class LoginActivity extends AppCompatActivity {
     class StudentsLoginTask extends AsyncTask<String, Object, MemberCoach> {
 
 
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            progressDialog = new ProgressDialog(LoginActivity.this);
-//            progressDialog.setMessage("Loading...");
-//            progressDialog.show();
-//            Log.d(TAG, "ZZZZZZZZZZZZZZZZZZZZZZZZZZz: ");
-//
-//        }
-//
 
         @Override
         protected MemberCoach doInBackground(String... params) {
@@ -200,25 +172,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    //    }
-//
-//    @Override
-//    protected void onStart() {
-//        progressDialog.onStart();
-//        SharedPreferences pref = getSharedPreferences(Common.PREF_FILE, MODE_PRIVATE);
-//        boolean login = pref.getBoolean("login", false);
-//        if (login) {
-//            String name = pref.getString("email", "");
-//            String password = pref.getString("password", "");
-//            if (isUserValid(name, password)) {
-//                setResult(RESULT_OK);
-//                finish();
-//            } else {
-//                showMessage(R.string.msg_InvalidEmailOrPassword);
-//            }
-//        }
-//    }
-//
     private void showMessage(int msgResId) {
         tvMessage.setText(msgResId);
     }
@@ -229,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
             if (studentsLoginTask == null){
                 studentsLoginTask = new StudentsLoginTask();
             }
-            memberCoach =studentsLoginTask.execute(Common.URL, role, username, password).get();
+            memberCoach =studentsLoginTask.execute(Common.URL+"StudentsServlet", role, username, password).get();
         } else {
             Common.showToast(this, R.string.tryagain);
         }
@@ -244,6 +197,8 @@ public class LoginActivity extends AppCompatActivity {
             studentsLoginTask = null;
         }
     }
+
+
 }
 
 
