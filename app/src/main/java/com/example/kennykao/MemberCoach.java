@@ -10,6 +10,8 @@ import StudentsLogin.StudentsVO;
 public class MemberCoach {
     StudentsVO studentsVO;
     CoachesVO coachesVO;
+    MembersVO membersVO;
+
     public MemberCoach(){}
 
     public StudentsVO getStudentsVO() {
@@ -28,8 +30,13 @@ public class MemberCoach {
         this.coachesVO = coachesVO;
     }
 
+    public MembersVO getMembersVO(){ return membersVO;}
+
+    public void setMembersVO(MembersVO membersVO) { this.membersVO = membersVO;}
+
     public MemberCoach(StudentsVO studentsVO, CoachesVO coachesVO) {
         this.studentsVO = studentsVO;
         this.coachesVO = coachesVO;
+        this.membersVO = membersVO;
     }
 }

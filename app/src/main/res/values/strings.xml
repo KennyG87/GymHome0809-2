@@ -4,4 +4,5 @@
 
     <string name="tryagain">tryagain</string>
     <string name="InvalidUserOrPassword">InvalidUserOrPassword</string>
+    <string name="UserCannotNull"></string>
 </resources>
