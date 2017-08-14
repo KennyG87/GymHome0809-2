@@ -7,12 +7,12 @@ import StudentsLogin.StudentsVO;
  * Created by cuser on 2017/8/9.
  */
 
-public class MemberCoach {
+public class AllMembers {
     StudentsVO studentsVO;
     CoachesVO coachesVO;
     MembersVO membersVO;
 
-    public MemberCoach(){}
+    public AllMembers(){}
 
     public StudentsVO getStudentsVO() {
         return studentsVO;
@@ -34,7 +34,7 @@ public class MemberCoach {
 
     public void setMembersVO(MembersVO membersVO) { this.membersVO = membersVO;}
 
-    public MemberCoach(StudentsVO studentsVO, CoachesVO coachesVO) {
+    public AllMembers(StudentsVO studentsVO, CoachesVO coachesVO) {
         this.studentsVO = studentsVO;
         this.coachesVO = coachesVO;
         this.membersVO = membersVO;

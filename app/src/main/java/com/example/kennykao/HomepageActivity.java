@@ -25,7 +25,7 @@ public class HomepageActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setClass(HomepageActivity.this,LoginActivity.class);
                 startActivity(intent);
-                HomepageActivity.this.finish();
+//                HomepageActivity.this.finish();
             }
         });
         btLinktoSignup.setOnClickListener(new Button.OnClickListener(){
@@ -34,7 +34,7 @@ public class HomepageActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setClass(HomepageActivity.this,SignupActivity.class);
                 startActivity(intent);
-                HomepageActivity.this.finish();
+//                HomepageActivity.this.finish();
             }
         });
     }

@@ -5,6 +5,15 @@ import java.io.Serializable;
 
 public class MembersVO implements Serializable {
 	private int mem_no;
+	MembersVO membersVO = new MembersVO();
+	public MembersVO(int mem_no, String mem_acc, String mem_rank, String mem_nickname, Integer mr_num) {
+		this.mem_no = mem_no;
+		this.mem_acc = mem_acc;
+		this.mem_rank = mem_rank;
+		this.mem_nickname = mem_nickname;
+		this.mr_num = mr_num;
+	}
+
 	private String mem_acc;
 	private String mem_rank;
 	private String mem_nickname;

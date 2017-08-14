@@ -1,6 +1,7 @@
 package com.example.kennykao;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,19 +32,19 @@ import StudentsLogin.StudentsVO;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
-    private StudentsSignupTask studentsSignupTask;
+    private static final int REQUEST_SIGNUP = 0;
+    private SignupTask SignupTask;
     private ProgressDialog progressDialog;
     private RadioGroup rgMembers;
-    private RadioButton rbStudents;
-    private RadioButton rbCoaches;
+//    private RadioButton rbStudents;
+//    private RadioButton rbCoaches;
     private Button btSignup;
     private EditText etUser;
     private TextView tvMessage;
     private StudentsVO stus;
     private CoachesVO coas;
-    private MemberCoach memberCoach;
-
-
+    private AllMembers allMembers;
+    private TextView linktoLogin;
 
 
     @Override
@@ -54,14 +55,34 @@ public class SignupActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_signup);
         setResult(RESULT_CANCELED);
-        memberCoach = new MemberCoach();
+        allMembers = new AllMembers();
         rgMembers = (RadioGroup) findViewById(R.id.rgMembers);
-        rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
-        rbStudents = (RadioButton) findViewById(R.id.rbStudents);
+//        rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
+//        rbStudents = (RadioButton) findViewById(R.id.rbStudents);
         btSignup = (Button) findViewById(R.id.btSignup);
         etUser = (EditText) findViewById(R.id.etUser);
 
-        tvMessage = (TextView) findViewById(R.id.tvMessage);
+        linktoLogin = (TextView) findViewById(R.id.btLinktoLogin);
+
+//        linktoLogin.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                Intent intent = new Intent();
+//                intent.setClass(SignupActivity.this,LoginActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+
+        rgMembers.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedID){
+                RadioButton radioButton = (RadioButton) group.findViewById(checkedID);
+
+            }
+        });
+
+
+
         btSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,16 +96,16 @@ public class SignupActivity extends AppCompatActivity {
 
                 Object obj = null;
                 try {
-                    memberCoach = isUserNew(role, username);
+                    allMembers = isUserNew(role, username);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                stus = memberCoach.getStudentsVO();
-                coas = memberCoach.getCoachesVO();
+                stus = allMembers.getStudentsVO();
+                coas = allMembers.getCoachesVO();
 
-                if(memberCoach == null ) {
+                if(allMembers == null ) {
                     Common.showToast(getBaseContext(), "WRONG");
                     return;
                 }else {
@@ -101,12 +122,12 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-    class StudentsSignupTask extends AsyncTask<String, Object, MemberCoach> {
+    class SignupTask extends AsyncTask<String, Object, AllMembers> {
 
 
 
         @Override
-        protected MemberCoach doInBackground(String... params) {
+        protected AllMembers doInBackground(String... params) {
             String role = params[1];
             String url = params[0];
             String username = params[2];
@@ -123,10 +144,10 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             Gson gson = new Gson();
-//            Type listType = new TypeToken<MemberCoach>() {
+//            Type listType = new TypeToken<AllMembers>() {
 //            }.getType();
 //            Object obj = gson.fromJson(jsonIn,Object.class);
-            return  gson.fromJson(jsonIn, MemberCoach.class);
+            return  gson.fromJson(jsonIn, AllMembers.class);
 
         }
 
@@ -167,25 +188,25 @@ public class SignupActivity extends AppCompatActivity {
         tvMessage.setText(msgResId);
     }
 
-    private MemberCoach isUserNew(String role, String username) throws ExecutionException, InterruptedException {
+    private AllMembers isUserNew(String role, String username) throws ExecutionException, InterruptedException {
         Object obj = null;
         if (Common.networkConnected(this)) {
-            if (studentsSignupTask == null){
-                studentsSignupTask = new StudentsSignupTask();
+            if (SignupTask == null){
+                SignupTask = new SignupTask();
             }
-            memberCoach =studentsSignupTask.execute(Common.URL+"MembersServlet", role, username).get();
+            allMembers =SignupTask.execute(Common.URL+"StudentsServlet", role, username).get();
         } else {
             Common.showToast(this, R.string.tryagain);
         }
-        return memberCoach;
+        return allMembers;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (studentsSignupTask != null){
-            studentsSignupTask.cancel(true);
-            studentsSignupTask = null;
+        if (SignupTask != null){
+            SignupTask.cancel(true);
+            SignupTask = null;
         }
     }
 

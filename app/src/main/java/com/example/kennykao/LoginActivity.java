@@ -1,6 +1,7 @@
 package com.example.kennykao;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -37,20 +38,20 @@ import static com.example.kennykao.Common.showToast;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-    private StudentsLoginTask studentsLoginTask;
+    private LoginTask LoginTask;
     private ProgressDialog progressDialog;
     private RadioGroup rgMembers;
-    private RadioButton rbStudents;
-    private RadioButton rbCoaches;
+//    private RadioButton rbStudents;
+//    private RadioButton rbCoaches;
     private Button btLogin;
     private EditText etUser;
     private EditText etPassword;
     private TextView tvMessage;
     private StudentsVO stus;
     private CoachesVO coas;
-    private MemberCoach memberCoach;
-
-
+    private AllMembers allMembers;
+    private TextView linktoSignup;
+    private TextView tvNopassword;
 
 
     @Override
@@ -61,14 +62,33 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
         setResult(RESULT_CANCELED);
-        memberCoach = new MemberCoach();
+        allMembers = new AllMembers();
         rgMembers = (RadioGroup) findViewById(R.id.rgMembers);
-        rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
-        rbStudents = (RadioButton) findViewById(R.id.rbStudents);
+//        rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
+//        rbStudents = (RadioButton) findViewById(R.id.rbStudents);
         btLogin = (Button) findViewById(R.id.btLogin);
         etUser = (EditText) findViewById(R.id.etUser);
         etPassword = (EditText) findViewById(R.id.etPassword);
-        tvMessage = (TextView) findViewById(R.id.tvMessage);
+        linktoSignup = (TextView) findViewById(R.id.btLinktoSignup);
+
+//        linktoSignup.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                Intent intent = new Intent();
+//                intent.setClass(LoginActivity.this,SignupActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+
+        rgMembers.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedID){
+                RadioButton radioButton = (RadioButton) group.findViewById(checkedID);
+
+            }
+        });
+
+
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,20 +100,18 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 String role = "stu"; // from radio button
 
-                Object obj = null;
+//                Object obj = null;
                 try {
-                    memberCoach = isUserValid(role, username, password);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                    allMembers = isUserValid(role, username, password);
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
-                stus = memberCoach.getStudentsVO();
-                coas = memberCoach.getCoachesVO();
+                stus = allMembers.getStudentsVO();
+                coas = allMembers.getCoachesVO();
 
-                if(memberCoach == null ) {
+                if(allMembers == null ) {
                     Common.showToast(getBaseContext(), "WRONG");
-                    return;
+
                 }else {
                     Common.showToast(getBaseContext(), "OK");
 
@@ -108,12 +126,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    class StudentsLoginTask extends AsyncTask<String, Object, MemberCoach> {
+    class LoginTask extends AsyncTask<String, Object, AllMembers> {
 
 
 
         @Override
-        protected MemberCoach doInBackground(String... params) {
+        protected AllMembers doInBackground(String... params) {
             String role = params[1];
             String url = params[0];
             String username = params[2];
@@ -132,10 +150,10 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             Gson gson = new Gson();
-//            Type listType = new TypeToken<MemberCoach>() {
+//            Type listType = new TypeToken<AllMembers>() {
 //            }.getType();
 //            Object obj = gson.fromJson(jsonIn,Object.class);
-            return  gson.fromJson(jsonIn, MemberCoach.class);
+            return  gson.fromJson(jsonIn, AllMembers.class);
 
         }
 
@@ -176,25 +194,28 @@ public class LoginActivity extends AppCompatActivity {
         tvMessage.setText(msgResId);
     }
 
-    private MemberCoach isUserValid(String role, String username, String password) throws ExecutionException, InterruptedException {
+    private AllMembers isUserValid(String role, String username, String password) throws ExecutionException, InterruptedException {
         Object obj = null;
         if (Common.networkConnected(this)) {
-            if (studentsLoginTask == null){
-                studentsLoginTask = new StudentsLoginTask();
+            if (LoginTask == null){
+                LoginTask = new LoginTask();
             }
-            memberCoach =studentsLoginTask.execute(Common.URL+"StudentsServlet", role, username, password).get();
+            allMembers = LoginTask.execute(Common.URL+"CoachesServlet", role, username, password).get();
+//            allMembers =LoginTask.execute(Common.URL+"StudentsServlet", role, username, password).get();
         } else {
+
             Common.showToast(this, R.string.tryagain);
         }
-        return memberCoach;
+
+        return allMembers;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (studentsLoginTask != null){
-            studentsLoginTask.cancel(true);
-            studentsLoginTask = null;
+        if (LoginTask != null){
+            LoginTask.cancel(true);
+            LoginTask = null;
         }
     }
 
