@@ -7,7 +7,7 @@ import StudentsLogin.StudentsVO;
  * Created by cuser on 2017/8/9.
  */
 
-public class AllMembers {
+public class AllMembers extends NewUser {
     StudentsVO studentsVO;
     CoachesVO coachesVO;
     MembersVO membersVO;

@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     private AllMembers allMembers;
     private TextView linktoSignup;
     private TextView tvNopassword;
-
+    private String role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,21 +69,25 @@ public class LoginActivity extends AppCompatActivity {
         btLogin = (Button) findViewById(R.id.btLogin);
         etUser = (EditText) findViewById(R.id.etUser);
         etPassword = (EditText) findViewById(R.id.etPassword);
-        linktoSignup = (TextView) findViewById(R.id.btLinktoSignup);
+        linktoSignup = (TextView) findViewById(R.id.linktoSignup);
 
-//        linktoSignup.setOnClickListener(new Button.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                Intent intent = new Intent();
-//                intent.setClass(LoginActivity.this,SignupActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        linktoSignup.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(LoginActivity.this,SignupActivity.class);
+                startActivity(intent);
+            }
+        });
 
         rgMembers.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedID){
                 RadioButton radioButton = (RadioButton) group.findViewById(checkedID);
+
+                role = String.valueOf(radioButton.getText());
+
+
 
             }
         });
@@ -94,20 +98,24 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = etUser.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
+
                 if (username.length() <= 0 || password.length() <= 0) {
                     showMessage(R.string.InvalidUserOrPassword);
                     return;
                 }
-                String role = "stu"; // from radio button
 
-//                Object obj = null;
+
+
+
+
+                //Object obj = null;
                 try {
                     allMembers = isUserValid(role, username, password);
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
-                stus = allMembers.getStudentsVO();
-                coas = allMembers.getCoachesVO();
+//                stus = allMembers.getStudentsVO();
+//                coas = allMembers.getCoachesVO();
 
                 if(allMembers == null ) {
                     Common.showToast(getBaseContext(), "WRONG");
@@ -126,17 +134,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    class LoginTask extends AsyncTask<String, Object, AllMembers> {
 
+    class LoginTask extends AsyncTask<String, Object, AllMembers> {
 
 
         @Override
         protected AllMembers doInBackground(String... params) {
-            String role = params[1];
+
             String url = params[0];
+            String role = params[1];
             String username = params[2];
             String password = params[3];
             String jsonIn;
+
+            if(role.equals("健身者")){
+                role = "0";
+            }else {
+                role="1";
+            }
+
+
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("role", role);
             jsonObject.addProperty("username", username);
@@ -195,7 +212,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private AllMembers isUserValid(String role, String username, String password) throws ExecutionException, InterruptedException {
-        Object obj = null;
+        //Object obj = null;
         if (Common.networkConnected(this)) {
             if (LoginTask == null){
                 LoginTask = new LoginTask();
