@@ -19,6 +19,14 @@
         android:textAlignment="center"
         android:background="#00cc00"/>
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="Autofill"
+        android:text="Magic"
+        android:background="@drawable/magicbutton"/>
+
     <TextView android:id="@+id/linktoLogin"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -67,6 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:textAlignment="center"
+        android:maxLength="10"
         android:hint="Name" />
 
     <EditText
@@ -74,6 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:maxLength="10"
         android:hint="Nickname" />
 
     <EditText
@@ -81,6 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:maxLength="10"
         android:hint="User-Name" />
 
     <EditText
@@ -88,6 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:maxLength="10"
         android:hint="Password" />
 
     <EditText
@@ -95,6 +107,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:maxLength="10"
         android:hint="Password re-confirm" />
 
     <RadioGroup

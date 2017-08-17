@@ -7,4 +7,5 @@
     <string name="UserCannotNull">UserCannotNull</string>
     <string name="msg_NoCameraAppsFound">msg_NoCameraAppsFound</string>
     <string name="CannotNull">CannotNull</string>
+    <string name="msg_NoNetwork">msg_NoNetwork</string>
 </resources>

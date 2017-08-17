@@ -1,13 +1,10 @@
 package com.example.kennykao;
 
-import CoachesLogin.CoachesVO;
-import StudentsLogin.StudentsVO;
-
 /**
  * Created by cuser on 2017/8/9.
  */
 
-public class AllMembers extends NewUser {
+public class AllMembers  {
     StudentsVO studentsVO;
     CoachesVO coachesVO;
     MembersVO membersVO;
