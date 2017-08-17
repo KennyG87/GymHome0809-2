@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvMessage;
     private StudentsVO stus;
     private CoachesVO coas;
-    private AllMembers allMembers;
+    private NewMembers newMembers;
     private TextView linktoSignup;
     private TextView tvNopassword;
     private String role;
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
         setResult(RESULT_CANCELED);
-        allMembers = new AllMembers();
+        newMembers = new NewMembers();
         rgMembers = (RadioGroup) findViewById(R.id.rgMembers);
 //        rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
 //        rbStudents = (RadioButton) findViewById(R.id.rbStudents);
@@ -107,14 +107,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 //Object obj = null;
                 try {
-                    allMembers = isUserValid(role, username, password);
+                    newMembers = isUserValid(role, username, password);
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
-//                stus = allMembers.getStudentsVO();
-//                coas = allMembers.getCoachesVO();
+//                stus = newMembers.getStudentsVO();
+//                coas = newMembers.getCoachesVO();
 
-                if(allMembers == null ) {
+                if(newMembers == null ) {
                     Common.showToast(getBaseContext(), "WRONG");
 
                 }else {
@@ -132,11 +132,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    class LoginTask extends AsyncTask<String, Object, AllMembers> {
+    class LoginTask extends AsyncTask<String, Object, NewMembers> {
 
 
         @Override
-        protected AllMembers doInBackground(String... params) {
+        protected NewMembers doInBackground(String... params) {
 
             String url = params[0];
             String role = params[1];
@@ -164,10 +164,10 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             Gson gson = new Gson();
-//            Type listType = new TypeToken<AllMembers>() {
+//            Type listType = new TypeToken<NewMembers>() {
 //            }.getType();
 //            Object obj = gson.fromJson(jsonIn,Object.class);
-            return  gson.fromJson(jsonIn, AllMembers.class);
+            return  gson.fromJson(jsonIn, NewMembers.class);
 
         }
 
@@ -208,20 +208,20 @@ public class LoginActivity extends AppCompatActivity {
         tvMessage.setText(msgResId);
     }
 
-    private AllMembers isUserValid(String role, String username, String password) throws ExecutionException, InterruptedException {
+    private NewMembers isUserValid(String role, String username, String password) throws ExecutionException, InterruptedException {
         //Object obj = null;
         if (Common.networkConnected(this)) {
             if (LoginTask == null){
                 LoginTask = new LoginTask();
             }
-            allMembers = LoginTask.execute(Common.URL+"CoachesServlet", role, username, password).get();
-//            allMembers =LoginTask.execute(Common.URL+"StudentsServlet", role, username, password).get();
+            newMembers = LoginTask.execute(Common.URL+"CoachesServlet", role, username, password).get();
+//            newMembers =LoginTask.execute(Common.URL+"StudentsServlet", role, username, password).get();
         } else {
 
             Common.showToast(this, R.string.tryagain);
         }
 
-        return allMembers;
+        return newMembers;
     }
 
     @Override

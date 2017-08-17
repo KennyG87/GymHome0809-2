@@ -4,12 +4,12 @@ package com.example.kennykao;
  * Created by cuser on 2017/8/9.
  */
 
-public class AllMembers  {
+public class NewMembers {
     StudentsVO studentsVO;
     CoachesVO coachesVO;
     MembersVO membersVO;
 
-    public AllMembers(){}
+    public NewMembers(){}
 
     public StudentsVO getStudentsVO() {
         return studentsVO;
@@ -31,7 +31,7 @@ public class AllMembers  {
 
     public void setMembersVO(MembersVO membersVO) { this.membersVO = membersVO;}
 
-    public AllMembers(StudentsVO studentsVO, CoachesVO coachesVO) {
+    public NewMembers(StudentsVO studentsVO, CoachesVO coachesVO) {
         this.studentsVO = studentsVO;
         this.coachesVO = coachesVO;
         this.membersVO = membersVO;

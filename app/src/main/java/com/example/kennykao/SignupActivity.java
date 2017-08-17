@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -32,6 +29,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 
@@ -43,13 +42,14 @@ public class SignupActivity extends AppCompatActivity {
     private RadioGroup rgMembers;
     private RadioButton rbStudents;
     private RadioButton rbCoaches;
+    private Integer userGender = 0, userStatus = 0;
     private Button btSignup;
     private EditText etUser;
     private TextView tvMessage;
     private StudentsVO stus;
     private CoachesVO coas;
     private MembersVO mems;
-    private AllMembers allMembers;
+    private NewMembers newMembers;
     private TextView linktoLogin;
     private EditText etName;
     private EditText etNickname;
@@ -63,6 +63,8 @@ public class SignupActivity extends AppCompatActivity {
     private EditText etIntro;
     private Button btTakeNow;
     private Button btUpload;
+    private Boolean flag;
+
 
 
 
@@ -74,7 +76,7 @@ public class SignupActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_signup);
         setResult(RESULT_CANCELED);
-        allMembers = new AllMembers();
+        newMembers = new NewMembers();
         rgMembers = (RadioGroup) findViewById(R.id.rgMembers);
         rbCoaches = (RadioButton) findViewById(R.id.rbCoaches);
         rbStudents = (RadioButton) findViewById(R.id.rbStudents);
@@ -92,31 +94,25 @@ public class SignupActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.etEmail);
         etIntro = (EditText) findViewById(R.id.etIntro);
 
+        rgMembers.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedID){
+            rbStudents = (RadioButton) group.findViewById(checkedID);
+                Common.showToast(getApplicationContext(), (String) rbStudents.getText());
+            userStatus = Integer.valueOf((String) rbStudents.getHint());
+        }
+    });
+
         rgSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedID){
-                RadioButton radioButton = (RadioButton) group.findViewById(checkedID);
-
+                rbMale = (RadioButton) group.findViewById(checkedID);
+                Common.showToast(getApplicationContext(), (String) rbMale.getText());
+                userGender = Integer.valueOf((String) rbMale.getHint());
             }
         });
 
-        memGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                RadioButtonGender = (RadioButton) group.findViewById(checkedId);
-                Common.showToast(getApplicationContext(), (String) RadioButtonGender.getText());
-                user_memGender = Integer.valueOf((String) RadioButtonGender.getHint());
-            }
-        });
-        memRelation.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                RadioButtonRelation = (RadioButton) group.findViewById(checkedId);
-                Common.showToast(getApplicationContext(), (String) RadioButtonRelation.getHint());
-                user_memRelation = Integer.valueOf((String) RadioButtonRelation.getHint());
 
-            }
-        });
 
         linktoLogin.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -138,38 +134,155 @@ public class SignupActivity extends AppCompatActivity {
                 String id = etID.getText().toString().trim();
                 String email = etEmail.getText().toString().trim();
                 String intro = etIntro.getText().toString().trim();
+                Authentication();
 
-
-                if (username.length() <= 0 || password.length() <= 0 && name.length() <= 0 && nickname.length() <= 0
-                        && id.length() <= 0 && email.length() <= 0 && intro.length() <= 0) {
-                    showMessage(R.string.CannotNull);
-                    return;
+                newMembers = new NewMembers();
+                if (networkConnected()) {
+                    try {
+                        String cool = new SignupTask.execute(Common.URL + "StudentsServlet").get();
+                        System.out.print(cool);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Common.showToast(v.getContext(), R.string.NoNetwork);
                 }
-                String status = "0"; // from radio button 0=Students 1=Coaches
 
-                Object obj = null;
-                try {
-                    allMembers = isUserNew(status, name, nickname, username, password, sex , id, email, intro);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            }
+
+
+            private boolean networkConnected() {
+                ConnectivityManager conManager =
+                        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = conManager.getActiveNetworkInfo();
+                return networkInfo != null && networkInfo.isConnected();
+            }
+
+            private void Authentication() {
+                flag = false;
+                ArrayList<Boolean> valids = new ArrayList(Arrays.asList(false,false,false,false,false,false,false,false,false,true));
+                Log.d("flag","flag::::::"+valids.contains(false));
+                //名字驗證
+                if (!valids.get(0)){
+                    String enameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9)]{3,15}$";
+                    if (name == null || name.length() == 0) {
+                        etName.setError("姓名: 請勿空白");
+                        return;
+                    } else if(!name.trim().matches(enameReg)) {
+                        etName.setError("姓名: 只能是中文、英文字母、數字 , 且長度必需在3到15之間");
+                        return;
+                    }
+                    valids.add(0,true);
+                //暱稱驗證
+                if (!valids.get(1)){
+                    String enameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9)]{3,15}$";
+                    if (nickname == null || nickname.length() == 0) {
+                        etNickname.setError("暱稱: 請勿空白");
+                        return;
+                    } else if(!nickname.trim().matches(enameReg)) {
+                        etNickname.setError("暱稱: 只能是中文、英文字母、數字 , 且長度必需在3到15之間");
+                        return;
+                    }
+                    valids.add(1,true);
                 }
-                stus = allMembers.getStudentsVO();
-                coas = allMembers.getCoachesVO();
-
-                if(allMembers == null ) {
-                    Common.showToast(getBaseContext(), "WRONG");
-                    return;
-                }else {
-                    Common.showToast(getBaseContext(), "OK");
 
                 }
+                //帳號驗證
+                if (!valids.get(2)){
+                    String enameReg = "^[(a-zA-Z0-9_)]{3,10}$";
+                    if (username == null || username.length() == 0) {
+                        etUser.setError("帳號: 請勿空白");
+                        return;
+                    } else if(!username.trim().matches(enameReg)) {
+                        etUser.setError("帳號: 英文字母、數字和_ , 且長度必需在3到10之間");
+                        return;
+                    }
+                    valids.add(2,true);
+                }
+                //密碼驗證
+                if (!valids.get(3)){
+                    String enameReg = "^[(a-zA-Z0-9)]{6,15}$";
+                    if (password == null || password.length() == 0) {
+                        etPassword.setError("密碼: 請勿空白");
+                        return;
+                    } else if(!password.trim().matches(enameReg)) {
+                        etPassword.setError("密碼: 只能是英文字母、數字 , 且長度必需在6到15之間");
+                        return;
+                    }
+                    valids.add(3,true);
+                }
+
+
+                //身分證驗證
+                if (!valids.get(4)){
+                    PID(id,valids);
+                }
+
+                //email驗證
+                if (!valids.get(5)){
+                    String enameReg = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
+                    if (email == null || email.length() == 0) {
+                        etEmail.setError("Email: 請勿空白");
+                        return;
+                    } else if(!email.trim().matches(enameReg)) {
+                        etEmail.setError("Email: 格式錯誤");
+                        return;
+                    }
+                    valids.add(5,true);
+                }
+                //自介驗證
+                if (!valids.get(6)){
+                    String enameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9)(,.;')]{10,300}$";
+                    if (intro == null || intro.length() == 0) {
+                        etIntro.setError("自介: 請勿空白");
+                        return;
+                    } else if(!intro.trim().matches(enameReg)) {
+                        etIntro.setError("自介: 長度必需在2到300之間");
+                        return;
+                    }
+                    valids.add(6,true);
+
+                }
+
+                flag=true;
+
+
+                Log.d("flag","flag:"+flag);
+
+            }
+
+        });
+
+
+
+
+//                String status = "0"; // from radio button 0=Students 1=Coaches
+//
+//                Object obj = null;
+//                try {
+//                    newMembers = isUserNew(status, name, nickname, username, password, sex , id, email, intro);
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                stus = newMembers.getStudentsVO();
+//                coas = newMembers.getCoachesVO();
+//
+//                if(newMembers == null ) {
+//                    Common.showToast(getBaseContext(), "WRONG");
+//                    return;
+//                }else {
+//                    Common.showToast(getBaseContext(), "OK");
+//
+//                }
 
                 if (networkConnected()) {
                     try {
-                        allMembers= (AllMembers) SignupTask().execute(Common.URL+"StudentsServlet").get();
-                        Log.d(TAG, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBB: ");
+                        newMembers = (NewMembers) SignupTask().execute(Common.URL+"StudentsServlet").get();
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (ExecutionException e) {
@@ -206,7 +319,7 @@ public class SignupActivity extends AppCompatActivity {
  *       allmember = new Allmember(member,student,coach);
  *       new SignupTask.execute(Common.URL+"upload", allmember);
  *
- protected AllMembers doInBackground(Object... params) {
+ protected NewMembers doInBackground(Object... params) {
  String url = params[0].toString();
  allmember = (Allmember)params[1];
  String str="";
@@ -217,7 +330,7 @@ public class SignupActivity extends AppCompatActivity {
 
                                  //sevlet用
                                  Gson gson = new Gson();
-                                 //            Type listType = new TypeToken<AllMembers>() {
+                                 //            Type listType = new TypeToken<NewMembers>() {
                                  //            }.getType();
                                  allmember = gson.from(jsonIn,listype);
 
@@ -270,7 +383,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-    protected void onPostExecute(AllMembers all) {
+    protected void onPostExecute(NewMembers all) {
 //            Integer status = user.getStatus();
 //            String name = user.getName();
 //            String nickname = user.getNickname();
@@ -321,8 +434,8 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-private class SignupTask extends AsyncTask<Object, Integer, AllMembers> {
-
+private class SignupTask extends AsyncTask<Object, Integer, NewMembers> {
+                Log.d(TAG, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBB: ");
 //        @Override
 //        // invoked on the UI thread immediately after the task is executed.
 //        protected void onPreExecute() {
@@ -334,7 +447,7 @@ private class SignupTask extends AsyncTask<Object, Integer, AllMembers> {
 
     @Override
     // invoked on the background thread immediately after onPreExecute()
-    protected AllMembers doInBackground(Object... params) {
+    protected NewMembers doInBackground(Object... params) {
         String url = params[0].toString();
         Integer status = Integer.valueOf(params[1].toString());
         String name = params[2].toString();
@@ -365,10 +478,10 @@ private class SignupTask extends AsyncTask<Object, Integer, AllMembers> {
             return null;
         }
         Gson gson = new Gson();
-//            Type listType = new TypeToken<AllMembers>() {
+//            Type listType = new TypeToken<NewMembers>() {
 //            }.getType();
 //            Object obj = gson.fromJson(jsonIn,Object.class);
-        return  gson.fromJson(jsonIn, AllMembers.class);
+        return  gson.fromJson(jsonIn, NewMembers.class);
     }
 
     private String getRemoteData(String url, String jsonOut) throws IOException {
@@ -405,7 +518,7 @@ private class SignupTask extends AsyncTask<Object, Integer, AllMembers> {
 		 * The result of the background computation is passed to this step as a
 		 * parameter.
 		 */
-    protected void onPostExecute(AllMembers all) {
+    protected void onPostExecute(NewMembers all) {
 //            Integer status = user.getStatus();
 //            String name = user.getName();
 //            String nickname = user.getNickname();
@@ -428,17 +541,17 @@ private class SignupTask extends AsyncTask<Object, Integer, AllMembers> {
         tvMessage.setText(msgResId);
     }
 
-    private AllMembers isUserNew(String role, String username, String nickname, String s, String password, Integer sex, String id, String email, String intro) throws ExecutionException, InterruptedException {
+    private NewMembers isUserNew(String role, String username, String nickname, String s, String password, Integer sex, String id, String email, String intro) throws ExecutionException, InterruptedException {
         Object obj = null;
         if (Common.networkConnected(this)) {
             if (SignupTask == null){
                 SignupTask = new SignupTask();
             }
-            newUser = (NewUser) SignupTask.execute(Common.URL+"StudentsServlet", role, username);
+            NewMembers = (NewMembers) SignupTask.execute(Common.URL+"StudentsServlet", role, username);
         } else {
             Common.showToast(this, R.string.tryagain);
         }
-        return (AllMembers) newUser;
+        return (NewMembers) newmembers;
     }
 
     @Override
@@ -448,6 +561,37 @@ private class SignupTask extends AsyncTask<Object, Integer, AllMembers> {
             SignupTask.cancel(true);
             SignupTask = null;
         }
+    }
+
+    public void PID(String id,ArrayList<Boolean> valids){
+        int[] num=new int[10];
+        int[] rdd={10,11,12,13,14,15,16,17,34,18,19,20,21,22,35,23,24,25,26,27,28,29,32,30,31,33};
+        id=id.toUpperCase();
+        if(!((id.trim().length()) ==10)){
+            etID.setError("身分證字號總長度為10!!");return;
+        }
+        if(id.charAt(0)<'A'||id.charAt(0)>'Z'){
+            etID.setError("第一個字錯誤!!");return;
+        }
+        if(id.charAt(1)!='1' && id.charAt(1)!='2'){
+            etID.setError("第二個字錯誤!!");return;
+        }
+        for(int i=1;i<10;i++){
+            if(id.charAt(i)<'0'||id.charAt(i)>'9'){
+                etID.setError("輸入錯誤");return;
+            }
+        }
+        for(int i=1;i<10;i++){
+            num[i]=(id.charAt(i)-'0');
+        }
+        num[0]=rdd[id.charAt(0)-'A'];
+        int sum=((int)num[0]/10+(num[0]%10)*9);
+        for(int i=0;i<8;i++){
+            sum+=num[i+1]*(8-i);
+        }
+        if(!(10-sum%10==num[9])) {
+            etID.setError("身分證號錯誤");}
+        valids.add(4,true);
     }
 
 
